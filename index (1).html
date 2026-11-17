@@ -1,0 +1,174 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Downtown Session Web</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Layout: nine albums on a ring; each musician sits among the albums they played on, joined to each by a line in their own color. Shared musicians sit inside the ring, single-album players fan out beside their album. */
+:root{
+  --bg:#f2f4f6; --panel:#ffffff; --ink:#12171c; --mute:#5b6671; --rule:#d6dce2; --album:#12171c; --mL:40%;
+  --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif; --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0f1317;--panel:#171c22;--ink:#eef1f4;--mute:#97a3ae;--rule:#2a323a;--album:#eef1f4;--mL:66%;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0f1317;--panel:#171c22;--ink:#eef1f4;--mute:#97a3ae;--rule:#2a323a;--album:#eef1f4;--mL:66%;color-scheme:dark}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;
+  padding-block:28px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1240px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+header{display:flex;flex-direction:column;gap:6px;max-width:68ch}
+h1{font-family:var(--display);font-weight:700;font-size:clamp(26px,4vw,38px);line-height:1.1;margin:0;text-wrap:balance}
+header p{margin:0;color:var(--mute)}
+#info{min-height:3.2em;padding:10px 14px;background:var(--panel);border:1px solid var(--rule);border-radius:6px;font-size:14px}
+#info b{font-weight:600}
+.scroll{overflow-x:auto;background:var(--panel);border:1px solid var(--rule);border-radius:6px}
+svg#web{display:block;width:100%;min-width:940px;height:auto}
+.edge{fill:none;stroke:var(--c);stroke-width:1.5;opacity:.6;transition:opacity .15s}
+.m{--c:hsl(var(--h) var(--s) calc(var(--mL) + var(--dl)));cursor:pointer;transition:opacity .15s}
+.m.multi .edge{stroke-width:2.2;opacity:.8}
+.dot{fill:var(--c);stroke:var(--panel);stroke-width:1.5}
+.lab{font-family:var(--body);font-size:11.5px;font-weight:600;fill:var(--ink);paint-order:stroke;stroke:var(--panel);stroke-width:3.5px;stroke-linejoin:round;pointer-events:none}
+.m.single .lab{display:none}
+.m.single.show .lab{display:block}
+.al{cursor:pointer;transition:opacity .15s}
+.al circle{fill:var(--album);stroke:var(--panel);stroke-width:3}
+.al .t{font-family:var(--display);font-weight:700;font-size:17px;fill:var(--ink)}
+.al .s{font-size:11.5px;fill:var(--mute)}
+svg.sel .m:not(.sel){opacity:.1}
+svg.sel .al:not(.hit){opacity:.3}
+.legend h2{font-family:var(--display);font-size:18px;margin:0 0 10px}
+.legend .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 12px}
+.legend button{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;padding:4px 6px;border-radius:4px;cursor:pointer;font-size:13px;min-width:0}
+.legend button:hover,.legend button:focus-visible{background:var(--rule)}
+.legend button.sel{outline:2px solid var(--ink)}
+.sw{flex:none;width:12px;height:12px;border-radius:50%;background:hsl(var(--h) var(--s) calc(var(--mL) + var(--dl)))}
+.legend .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.legend .x{margin-left:auto;color:var(--mute);font-variant-numeric:tabular-nums;font-size:12px}
+.notes{color:var(--mute);font-size:13px;max-width:80ch;display:flex;flex-direction:column;gap:6px}
+.notes p{margin:0}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Downtown Session Web</h1>
+    <p>Nine albums from the New York downtown scene, 1980–83, and the musicians who played on them. Each musician has one color, and a line in that color runs to every album they appear on.</p>
+  </header>
+  <div id="info" aria-live="polite">Hover or tap a musician, an album, or a name in the list below to follow their lines.</div>
+  <div class="scroll"><svg id="web" viewBox="0 0 1240 980" role="img" aria-label="Network of musicians connected to nine albums"></svg></div>
+  <section class="legend"><h2>Everyone on these records</h2><div class="grid" id="legend"></div></section>
+  <div class="notes">
+    <p>Performers only; producers and engineers are left out. Kip Hanrahan's 1981 debut is titled <i>Coup de Tête</i>, and the credits here come from its Discogs listing, which does not break out every track. Defunkt's only link to the other albums is bassist Melvin Gibbs, who also plays on <i>Nasty</i>. Its credits come from a single listing and may be incomplete.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+var A=[
+{t:"The Golden Palominos",s:"The Golden Palominos · 1983",m:["Anton Fier","Bill Laswell","Arto Lindsay","Fred Frith","John Zorn","Michael Beinhorn","David Moss","Jamaaladeen Tacuma","Nicky Skopelitis","Mark E. Miller","Roger Trilling","Thi-Linh Le"]},
+{t:"Lounge Lizards",s:"The Lounge Lizards · 1981",m:["John Lurie","Evan Lurie","Steve Piccolo","Arto Lindsay","Anton Fier"]},
+{t:"Coup de Tête",s:"Kip Hanrahan · 1981",m:["Kip Hanrahan","Anton Fier","Bill Laswell","Arto Lindsay","Jamaaladeen Tacuma","Jerry Gonzalez","Daniel Ponce","Nicky Marrero","Ignacio Berroa","Victor Lewis","George Cartwright","Byard Lancaster","Chico Freeman","Carlos Ward","John Stubblefield","George Naha","Bern Nix","Gene Golden","Angel Perez","Carlos Mestre","Michael Mantler","Cecil McBee","Orlando Di Girolamo","John Clark","Lisa Herman"]},
+{t:"Nasty",s:"Ronald Shannon Jackson\n& the Decoding Society · 1981",m:["Ronald Shannon Jackson","Vernon Reid","Lee Rozie","Charles Brackeen","Byard Lancaster","Khan Jamal","Melvin Gibbs","Bruce Johnson"]},
+{t:"Baselines",s:"Bill Laswell · 1983",m:["Bill Laswell","Michael Beinhorn","Ronald Shannon Jackson","George Lewis","Ralph Carney","Fred Frith","Martin Bisi","David Moss","Phillip Wilson","Daniel Ponce"]},
+{t:"Memory Serves",s:"Material · 1981",m:["Bill Laswell","Michael Beinhorn","Fred Maher","Sonny Sharrock","Fred Frith","Olu Dara","Henry Threadgill","George Lewis","Billy Bang","Charles K. Noyes"]},
+{t:"Archery",s:"John Zorn · recorded 1981",m:["John Zorn","Robert Dick","George Lewis","Anthony Coleman","Wayne Horvitz","Kramer","Eugene Chadbourne","Bill Horvitz","Bill Laswell","Polly Bradfield","Tom Cora","David Moss"]},
+{t:"Curlew",s:"Curlew · 1981",m:["Bill Bacon","George Cartwright","Tom Cora","Bill Laswell","Nicky Skopelitis"]},
+{t:"Defunkt",s:"Defunkt · 1980",m:["Joseph Bowie","Byron Bowie","Kelvyn Bell","Melvin Gibbs","Ronnie Burrage","Ted Daniel","Charles Bobo Shaw","Clarice Taylor"]}
+];
+var NS="http://www.w3.org/2000/svg",W=1240,cx=620,cy=490,R=350;
+var svg=document.getElementById("web");
+function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+
+var apos=A.map(function(a,i){var th=(-90+i*40)*Math.PI/180;return{x:cx+R*Math.cos(th),y:cy+R*Math.sin(th),th:th}});
+var map={},list=[];
+A.forEach(function(a,i){a.m.forEach(function(n){if(!map[n]){map[n]={name:n,al:[]};list.push(map[n])}map[n].al.push(i)})});
+list.sort(function(a,b){return b.al.length-a.al.length||a.name.localeCompare(b.name)});
+list.forEach(function(m,i){m.id=i;m.h=Math.round((i*137.508)%360);m.s=(i%2?72:88)+"%";m.dl=((i%3)-1)*7+"%"});
+
+// targets
+var rows={};
+list.forEach(function(m){
+  if(m.al.length>1){var sx=0,sy=0;m.al.forEach(function(i){sx+=apos[i].x;sy+=apos[i].y});m.x=sx/m.al.length;m.y=sy/m.al.length}
+  else{var i=m.al[0];(rows[i]=rows[i]||[]).push(m)}
+});
+Object.keys(rows).forEach(function(k){
+  var g=rows[k],th=apos[k].th,per=6;
+  g.forEach(function(m,j){
+    var row=Math.floor(j/per),pos=j%per,n=Math.min(per,g.length-row*per);
+    var ang=th+(pos-(n-1)/2)*0.078,r=R-38-row*38;
+    m.x=cx+r*Math.cos(ang);m.y=cy+r*Math.sin(ang);
+  });
+});
+list.forEach(function(m){if(m.name==="Fred Frith"){m.x+=75;m.y+=60}if(m.name==="Anton Fier"){m.x+=20;m.y+=87}if(m.name==="Arto Lindsay"){m.x-=75;m.y-=45}if(m.name==="Jamaaladeen Tacuma"){m.x-=50;m.y+=25}if(m.name==="Melvin Gibbs"){m.y+=24}if(m.name==="Daniel Ponce"){m.x-=55;m.y-=77}m.tx=m.x;m.ty=m.y;m.r=m.al.length>1?6+m.al.length:5});
+for(var it=0;it<400;it++){
+  for(var a=0;a<list.length;a++){var p=list[a];
+    p.x+=(p.tx-p.x)*0.03;p.y+=(p.ty-p.y)*0.03;
+    for(var b=a+1;b<list.length;b++){var q=list[b],dx=q.x-p.x,dy=q.y-p.y,d=Math.sqrt(dx*dx+dy*dy),min=p.r+q.r+9;
+      if(d<0.5){dx=Math.cos(a*2.4+b);dy=Math.sin(a*2.4+b);d=1}
+      if(d<min){var f=(min-d)/2/d;p.x-=dx*f;p.y-=dy*f;q.x+=dx*f;q.y+=dy*f}}}
+}
+
+// draw
+var gE=el("g",{},svg),gM=el("g",{},svg),gA=el("g",{},svg);
+list.forEach(function(m){
+  var g=el("g",{"class":"m "+(m.al.length>1?"multi":"single"),tabindex:0,role:"button","aria-label":m.name},gM);
+  g.style.setProperty("--h",m.h);g.style.setProperty("--s",m.s);g.style.setProperty("--dl",m.dl);
+  m.al.forEach(function(i){el("line",{"class":"edge",x1:m.x,y1:m.y,x2:apos[i].x,y2:apos[i].y},g)});
+  el("circle",{"class":"dot",cx:m.x,cy:m.y,r:m.r},g);
+  var t=el("text",{"class":"lab",x:m.x+m.r+4,y:m.y+4},g);t.textContent=m.name;
+  if(m.name==="Bill Laswell"){t.style.fontSize="15px";t.setAttribute("y",m.y+5)}
+  m.g=g;
+});
+// edges sit under dots: move edges into the edge layer order by re-appending groups is unnecessary; dots are drawn per group so later groups can overlap earlier lines, which is acceptable.
+var alEls=A.map(function(a,i){
+  var p=apos[i],c=Math.cos(p.th),g=el("g",{"class":"al",tabindex:0,role:"button","aria-label":a.t},gA);
+  el("circle",{cx:p.x,cy:p.y,r:15},g);
+  var anchor=c>0.3?"start":c<-0.3?"end":"middle",lx=p.x+(c>0.3?28:c<-0.3?-28:0),ly=p.y+(Math.abs(c)<=0.3?(Math.sin(p.th)<0?-30:40):0);
+  var t=el("text",{"class":"t",x:lx,y:ly,"text-anchor":anchor},g);t.textContent=a.t;
+  a.s.split("\n").forEach(function(line,k){var s=el("text",{"class":"s",x:lx,y:ly+17+k*14,"text-anchor":anchor},g);s.textContent=line});
+  return g;
+});
+
+// legend
+var leg=document.getElementById("legend");
+list.forEach(function(m){
+  var b=document.createElement("button");b.type="button";
+  b.style.setProperty("--h",m.h);b.style.setProperty("--s",m.s);b.style.setProperty("--dl",m.dl);
+  b.innerHTML='<span class="sw"></span><span class="n"></span><span class="x"></span>';
+  b.querySelector(".n").textContent=m.name;
+  b.querySelector(".x").textContent=m.al.length>1?"×"+m.al.length:"";
+  leg.appendChild(b);m.b=b;
+});
+
+// interaction
+var info=document.getElementById("info"),lock=null,DEF=info.textContent;
+function esc(s){return s.replace(/[&<>]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;"}[c]})}
+function clear(){
+  svg.classList.remove("sel");
+  list.forEach(function(m){m.g.classList.remove("sel","show");m.b.classList.remove("sel")});
+  alEls.forEach(function(g){g.classList.remove("hit")});
+}
+function show(k,i){
+  clear();svg.classList.add("sel");
+  if(k==="m"){var m=list[i];m.g.classList.add("sel","show");m.b.classList.add("sel");
+    m.al.forEach(function(a){alEls[a].classList.add("hit")});
+    info.innerHTML="<b>"+esc(m.name)+"</b> · "+(m.al.length>1?m.al.length+" of these albums: ":"1 album: ")+m.al.map(function(a){return esc(A[a].t)}).join(", ");
+  }else{
+    alEls[i].classList.add("hit");var sh=0;
+    A[i].m.forEach(function(n){var m=map[n];m.g.classList.add("sel","show");m.b.classList.add("sel");if(m.al.length>1){sh++;m.al.forEach(function(a){alEls[a].classList.add("hit")})}});
+    info.innerHTML="<b>"+esc(A[i].t)+"</b> ("+esc(A[i].s.replace("\n"," "))+") · "+A[i].m.length+" musicians, "+sh+" also on other albums here: "+esc(A[i].m.map(function(n){return n}).join(", "));
+  }
+}
+function reset(){if(lock)show(lock[0],lock[1]);else{clear();info.textContent=DEF}}
+function bind(node,k,i){
+  node.addEventListener("mouseenter",function(){show(k,i)});
+  node.addEventListener("focus",function(){show(k,i)});
+  node.addEventListener("mouseleave",reset);
+  node.addEventListener("blur",reset);
+  node.addEventListener("click",function(e){e.stopPropagation();
+    if(lock&&lock[0]===k&&lock[1]===i){lock=null;reset()}else{lock=[k,i];show(k,i)}});
+}
+list.forEach(function(m){bind(m.g,"m",m.id);bind(m.b,"m",m.id)});
+alEls.forEach(function(g,i){bind(g,"a",i)});
+svg.addEventListener("click",function(){lock=null;reset()});
+})();
+</script>
+
+</body></html>
