@@ -1,9 +1,13 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Downtown Session Web</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
 <style>
-/* Layout: ten albums on a ring; each musician sits among the albums they played on, joined to each by a line in their own color. Shared musicians sit inside the ring, single-album players fan out beside their album. */
+/* Layout: eleven albums on a ring; each musician sits among the albums they played on, joined to each by a line in their own color. Shared musicians sit inside the ring, single-album players fan out beside their album. */
 :root{
   --bg:#f2f4f6; --panel:#ffffff; --ink:#12171c; --mute:#5b6671; --rule:#d6dce2; --album:#12171c; --mL:40%;
   --display:"Space Grotesk","Helvetica Neue",Arial,sans-serif; --body:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
@@ -46,16 +50,18 @@ svg.sel .al:not(.hit){opacity:.3}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
+</head>
+<body>
 <div class="wrap">
   <header>
     <h1>Downtown Session Web</h1>
-    <p>Ten albums from the New York downtown scene, 1980–83, and the musicians who played on them. Each musician has one color, and a line in that color runs to every album they appear on.</p>
+    <p>Eleven albums from the New York downtown scene, 1980–83, and the musicians who played on them. Each musician has one color, and a line in that color runs to every album they appear on.</p>
   </header>
   <div id="info" aria-live="polite">Hover or tap a musician, an album, or a name in the list below to follow their lines.</div>
-  <div class="scroll"><svg id="web" viewBox="0 0 1240 980" role="img" aria-label="Network of musicians connected to ten albums"></svg></div>
+  <div class="scroll"><svg id="web" viewBox="0 0 1240 980" role="img" aria-label="Network of musicians connected to eleven albums"></svg></div>
   <section class="legend"><h2>Everyone on these records</h2><div class="grid" id="legend"></div></section>
   <div class="notes">
-    <p>Performers only; producers and engineers are left out. Kip Hanrahan's 1981 debut is titled <i>Coup de Tête</i>, and the credits here come from its Discogs listing, which does not break out every track. Defunkt's only link to the other albums is bassist Melvin Gibbs, who also plays on <i>Nasty</i>. Its credits come from a single listing and may be incomplete.</p>
+    <p>Performers only; producers and engineers are left out. Kip Hanrahan's 1981 debut is titled <i>Coup de Tête</i>, and the credits here come from its Discogs listing, which does not break out every track. Defunkt's only link to the other albums is bassist Melvin Gibbs, who also plays on <i>Nasty</i>. Its credits come from a single listing and may be incomplete. I/S/M credits "M.E. Miller" on drums, shown here as Mark E. Miller of the Golden Palominos.</p>
   </div>
 </div>
 
@@ -71,7 +77,8 @@ var A=[
 {t:"Archery",s:"John Zorn · recorded 1981",m:["John Zorn","Robert Dick","George Lewis","Anthony Coleman","Wayne Horvitz","Kramer","Eugene Chadbourne","Bill Horvitz","Bill Laswell","Polly Bradfield","Tom Cora","David Moss"]},
 {t:"Curlew",s:"Curlew · 1981",m:["Bill Bacon","George Cartwright","Tom Cora","Bill Laswell","Nicky Skopelitis"]},
 {t:"Defunkt",s:"Defunkt · 1980",m:["Joseph Bowie","Byron Bowie","Kelvyn Bell","Melvin Gibbs","Ronnie Burrage","Ted Daniel","Charles Bobo Shaw","Clarice Taylor"]},
-{t:"Killing Time",s:"Massacre · 1981",m:["Fred Frith","Bill Laswell","Fred Maher"]}
+{t:"Killing Time",s:"Massacre · 1981",m:["Fred Frith","Bill Laswell","Fred Maher"]},
+{t:"I/S/M",s:"Elliott Sharp · 1982",m:["Elliott Sharp","Bill Laswell","Olu Dara","Art Baron","Charles K. Noyes","Diana Meckley","Mark E. Miller"]}
 ];
 var NS="http://www.w3.org/2000/svg",W=1240,cx=620,cy=490,R=350;
 var svg=document.getElementById("web");
@@ -97,14 +104,38 @@ Object.keys(rows).forEach(function(k){
     m.x=cx+r*Math.cos(ang);m.y=cy+r*Math.sin(ang);
   });
 });
-var PIN={"Fred Maher":[470,580],"Melvin Gibbs":[680,440],"Fred Frith":[760,545],"George Lewis":[619,764]};
-list.forEach(function(m){if(m.name==="Fred Frith"){m.x+=75;m.y+=60}if(m.name==="Anton Fier"){m.x+=20;m.y+=87}if(m.name==="Arto Lindsay"){m.x-=75;m.y-=45}if(m.name==="Jamaaladeen Tacuma"){m.x-=50;m.y+=25}if(m.name==="Melvin Gibbs"){m.y+=24}if(m.name==="Daniel Ponce"){m.x-=55;m.y-=77}var pin=PIN[m.name];if(pin){m.x=pin[0];m.y=pin[1]}m.tx=m.x;m.ty=m.y;m.r=m.al.length>1?6+m.al.length:5});
-for(var it=0;it<400;it++){
-  for(var a=0;a<list.length;a++){var p=list[a];
-    p.x+=(p.tx-p.x)*0.03;p.y+=(p.ty-p.y)*0.03;
-    for(var b=a+1;b<list.length;b++){var q=list[b],dx=q.x-p.x,dy=q.y-p.y,d=Math.sqrt(dx*dx+dy*dy),min=p.r+q.r+9;
-      if(d<0.5){dx=Math.cos(a*2.4+b);dy=Math.sin(a*2.4+b);d=1}
-      if(d<min){var f=(min-d)/2/d;p.x-=dx*f;p.y-=dy*f;q.x+=dx*f;q.y+=dy*f}}}
+list.forEach(function(m,k){
+  m.multi=m.al.length>1;m.r=m.multi?6+m.al.length:5;
+  var cw=m.name==="Bill Laswell"?8.6:6.8;
+  m.L=m.r+2;m.Rt=m.multi?m.r+8+m.name.length*cw:m.r+2;m.T=m.multi?(m.name==="Bill Laswell"?13:10):m.r+2;
+  var NUDGE={"Fred Maher":[0,45]}[m.name];if(NUDGE){m.x+=NUDGE[0];m.y+=NUDGE[1]}
+  var PN={"Arto Lindsay":[740,250],"Jamaaladeen Tacuma":[720,330],"Anton Fier":[900,265]}[m.name];
+  m.tx=m.x+(m.multi?Math.cos(k*2.4)*6:0);m.ty=m.y+(m.multi?Math.sin(k*2.4)*6:0);m.x=m.tx;m.y=m.ty;
+  if(PN){m.px=m.x=m.tx=PN[0];m.py=m.y=m.ty=PN[1]}
+});
+var obs=apos.map(function(p){var c=Math.cos(p.th),w=270,o={l:p.x-24,r:p.x+24,t:p.y-24,b:p.y+24};
+  if(c>0.3){o.r=p.x+w}else if(c<-0.3){o.l=p.x-w}else{o.l=p.x-140;o.r=p.x+140;if(Math.sin(p.th)<0){o.t=p.y-66}else{o.b=p.y+70}}
+  if(Math.abs(c)>0.3){o.t=p.y-24;o.b=p.y+34}
+  return o});
+for(var it=0;it<900;it++){
+  for(var a=0;a<list.length;a++){var p=list[a],kp=p.multi?0.012:0.05;
+    p.x+=(p.tx-p.x)*kp;p.y+=(p.ty-p.y)*kp;
+    for(var b=a+1;b<list.length;b++){var q=list[b],pad=3;
+      var ox=Math.min(p.x+p.Rt,q.x+q.Rt)-Math.max(p.x-p.L,q.x-q.L)+pad;
+      var oy=Math.min(p.y+p.T,q.y+q.T)-Math.max(p.y-p.T,q.y-q.T)+pad;
+      if(ox>0&&oy>0){
+        var wp=p.multi?0.35:0.65,wq=q.multi?0.35:0.65,s=wp+wq;
+        if(ox<oy){var dir=((p.x+(p.Rt-p.L)/2)<(q.x+(q.Rt-q.L)/2))?-1:1;p.x+=dir*ox*wp/s;q.x-=dir*ox*wq/s}
+        else{var dy=(p.y<q.y)?-1:1;if(p.y===q.y)dy=(a%2?1:-1);p.y+=dy*oy*wp/s;q.y-=dy*oy*wq/s}
+      }}
+    obs.forEach(function(o){
+      var ox=Math.min(p.x+p.Rt,o.r)-Math.max(p.x-p.L,o.l)+4,oy=Math.min(p.y+p.T,o.b)-Math.max(p.y-p.T,o.t)+4;
+      if(ox>0&&oy>0){
+        if(ox<oy){p.x+=((p.x+(p.Rt-p.L)/2)<(o.l+o.r)/2?-1:1)*ox}else{p.y+=(p.y<(o.t+o.b)/2?-1:1)*oy}
+      }});
+    p.x=Math.max(30,Math.min(W-30-(p.Rt-p.L),p.x));p.y=Math.max(40,Math.min(940,p.y));
+    if(p.px!==undefined){p.x=p.px;p.y=p.py}
+  }
 }
 
 // draw
@@ -172,5 +203,5 @@ alEls.forEach(function(g,i){bind(g,"a",i)});
 svg.addEventListener("click",function(){lock=null;reset()});
 })();
 </script>
-
-</body></html>
+</body>
+</html>
